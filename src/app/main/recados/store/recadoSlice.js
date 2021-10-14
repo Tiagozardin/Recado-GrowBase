@@ -2,15 +2,15 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import ApiService from 'app/services/api/';
 
-export const getOne = createAsyncThunk('recado/getOne', async (uid, { dispatch }) => {
-	const response = await ApiService.doGet(`/recados/${uid}`);
+export const getOne = createAsyncThunk('recado/getOne', async (id, { dispatch }) => {
+	const response = await ApiService.doGet(`/recados/${id}`);
 	const { recado } = await response;
 
 	return { ...recado };
 });
 
 export const saveOne = createAsyncThunk('recado/saveOne', async (data, { dispatch }) => {
-	const request = { ...data, userUid: 1 };
+	const request = { ...data, loginID: 1 };
 
 	const response = await ApiService.doPost('/recado', request);
 	if (!response.error) {
@@ -21,26 +21,26 @@ export const saveOne = createAsyncThunk('recado/saveOne', async (data, { dispatc
 	return { ...data, message: 'Concluido', success: 'Ok' };
 });
 
-export const updateOne = createAsyncThunk('recado/updateOne', async ({ data, uid }, { dispatch, getState }) => {
+export const updateOne = createAsyncThunk('recado/updateOne', async ({ data, id }, { dispatch, getState }) => {
 	const request = { ...data };
 
-	const response = await ApiService.doPost(`/recado/${uid}`, request);
+	const response = await ApiService.doPost(`/recado/${id}`, request);
 	const oldState = getState().recado;
 
 	if (!response.success) {
 		dispatch(updateResponse(response.data));
-		return { ...data, uid, loading: false };
+		return { ...data, id, loading: false };
 	}
 
-	dispatch(getOne(uid));
+	dispatch(getOne(id));
 
 	return { ...oldState, message: 'Concluido', success: 'Ok' };
 });
 
-export const deleteOne = createAsyncThunk('recado/deleteOne', async ({ data, uid }, { dispatch, getState }) => {
+export const deleteOne = createAsyncThunk('recado/deleteOne', async ({ data, id }, { dispatch, getState }) => {
 	const request = { ...data };
 
-	const response = await ApiService.doDelete(`/recado/${uid}`);
+	const response = await ApiService.doDelete(`/recado/${id}`);
 
 	return { message: 'Concluido', success: 'Ok' };
 });

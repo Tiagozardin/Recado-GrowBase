@@ -31,12 +31,12 @@ function Content() {
 
 	useDeepCompareEffect(() => {
 		function updateState() {
-			const { uid } = routeParams;
-			if (uid === 'new') {
+			const { id } = routeParams;
+			if (id === 'new') {
 				dispatch(newData());
 			} else {
 				setLoading(true);
-				dispatch(getOne(uid));
+				dispatch(getOne(id));
 			}
 		}
 
@@ -125,8 +125,8 @@ function Content() {
 		setLoading(true);
 		dispatch(updateLoading(true));
 
-		if (recadoRedux?.uid !== 'new') {
-			dispatch(updateOne({ data: modal, uid: recadoRedux?.uid }));
+		if (recadoRedux?.id !== 'new') {
+			dispatch(updateOne({ data: modal, id: recadoRedux?.id }));
 			setTimeout(function pushHistory() {
 				history.push('/recado');
 			}, 3000);
@@ -139,7 +139,7 @@ function Content() {
 	}
 
 	function Delete() {
-		dispatch(deleteOne({ uid: recadoRedux?.uid }));
+		dispatch(deleteOne({ id: recadoRedux?.id }));
 		setTimeout(function pushHistory() {
 			history.push('/recado');
 		}, 3000);

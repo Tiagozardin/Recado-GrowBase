@@ -28,7 +28,7 @@ const RecadosConfig = {
 	// auth: authRoles.admin,
 	routes: [
 		{
-			path: '/recado/:uid',
+			path: '/recado/:id',
 			component: React.lazy(() => import('./show/Recado'))
 		},
 		{
