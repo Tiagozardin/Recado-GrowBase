@@ -10,17 +10,17 @@ import { getAll, selectAll } from '../store/recadosSlice';
 
 const columns = [
 	{
-		id: 'title',
+		id: 'titulo',
 		align: 'left',
 		disablePadding: false,
-		label: 'Title',
+		label: 'Titulo',
 		sort: true
 	},
 	{
-		id: 'description',
+		id: 'descricao',
 		align: 'left',
 		disablePadding: false,
-		label: 'Description',
+		label: 'Descrição',
 		sort: false
 	}
 ];
@@ -32,8 +32,8 @@ export default function Products() {
 	const [data, setData] = useState([]);
 	const [loading, setLoading] = useState(false);
 
-	function handleClick() {
-		history.push(`/recado`);
+	function handleClick(value) {
+		history.push(`/recado/${value.id}`);
 	}
 
 	function handleClickNew() {

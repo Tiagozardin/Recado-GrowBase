@@ -14,7 +14,7 @@ function Header() {
 		}
 	}, [recadoRedux]);
 
-	return <PageCardedHeader link="/recado" title={recado?.title || 'Novo recado'} textBack="Recados" />;
+	return <PageCardedHeader link="/recado" title={recado?.titulo || 'Novo recado'} textBack="Recados" />;
 }
 
 export default Header;

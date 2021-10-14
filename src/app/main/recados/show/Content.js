@@ -16,7 +16,7 @@ import objectsKeysEquals from 'app/utils/validations/objectsKeysEquals';
 import ButtonDefault from 'app/fuse-layouts/shared-components/button-default/ButtonDeafault';
 import { Grid, InputAdornment, MenuItem } from '@material-ui/core';
 
-import { saveOne, newData, getOne, updateOne, updateResponse, updateLoading } from '../store/recadoSlice';
+import { saveOne, newData, getOne, updateOne, updateResponse, updateLoading, deleteOne } from '../store/recadoSlice';
 
 function Content() {
 	const dispatch = useDispatch();
@@ -31,12 +31,12 @@ function Content() {
 
 	useDeepCompareEffect(() => {
 		function updateState() {
-			const { id } = routeParams;
-			if (id === 'new') {
+			const { uid } = routeParams;
+			if (uid === 'new') {
 				dispatch(newData());
 			} else {
 				setLoading(true);
-				dispatch(getOne(id));
+				dispatch(getOne(uid));
 			}
 		}
 
@@ -125,11 +125,24 @@ function Content() {
 		setLoading(true);
 		dispatch(updateLoading(true));
 
-		if (recadoRedux?.id !== 'new') {
-			dispatch(updateOne({ data: modal, id: recadoRedux?.id }));
+		if (recadoRedux?.uid !== 'new') {
+			dispatch(updateOne({ data: modal, uid: recadoRedux?.uid }));
+			setTimeout(function pushHistory() {
+				history.push('/recado');
+			}, 3000);
 		} else {
 			dispatch(saveOne(modal));
+			setTimeout(function pushHistory() {
+				history.push('/recado');
+			}, 3000);
 		}
+	}
+
+	function Delete() {
+		dispatch(deleteOne({ uid: recadoRedux?.uid }));
+		setTimeout(function pushHistory() {
+			history.push('/recado');
+		}, 3000);
 	}
 
 	function handleSelect(value) {
@@ -158,10 +171,10 @@ function Content() {
 				>
 					<TextFieldFormsy
 						className="mb-16 w-full"
-						label="Nome"
+						label="Titulo"
 						type="text"
-						name="title"
-						value={recadoRedux.title}
+						name="titulo"
+						value={recadoRedux.titulo}
 						variant="outlined"
 						validations={{ minLength: 3 }}
 						validationErrors={{ minLength: 'Preencha o campo com o titulo' }}
@@ -173,8 +186,8 @@ function Content() {
 						className="mb-16 w-full"
 						label="Descrição"
 						type="text"
-						name="description"
-						value={recadoRedux.description}
+						name="descricao"
+						value={recadoRedux.descricao}
 						variant="outlined"
 						validations={{ minLength: 3 }}
 						validationErrors={{ minLength: 'Preencha o campo com a descrição' }}
@@ -191,6 +204,7 @@ function Content() {
 								loading={loading}
 								disabled={!isFormValid}
 							/>
+							<ButtonDefault fullWidth action={Delete} title="Excluir" />
 						</Grid>
 					</Grid>
 				</Formsy>

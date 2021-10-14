@@ -2,49 +2,54 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import ApiService from 'app/services/api/';
 
-export const getOne = createAsyncThunk('recado/getOne', async (id, { dispatch }) => {
-	const response = await ApiService.doGet(`/recados/${id}`);
-	const { recado } = await response.data;
+export const getOne = createAsyncThunk('recado/getOne', async (uid, { dispatch }) => {
+	const response = await ApiService.doGet(`/recados/${uid}`);
+	const { recado } = await response;
 
 	return { ...recado };
 });
 
 export const saveOne = createAsyncThunk('recado/saveOne', async (data, { dispatch }) => {
-	const request = { ...data };
+	const request = { ...data, userUid: 1 };
 
 	const response = await ApiService.doPost('/recado', request);
-	if (!response) {
+	if (!response.error) {
 		dispatch(updateResponse(response.data));
 		return data;
 	}
-	const { recado } = await response.data;
 
-	dispatch(getOne(recado.id));
-
-	return { ...data, message: response.message, success: response.success };
+	return { ...data, message: 'Concluido', success: 'Ok' };
 });
 
-export const updateOne = createAsyncThunk('recado/updateOne', async ({ data, id }, { dispatch, getState }) => {
+export const updateOne = createAsyncThunk('recado/updateOne', async ({ data, uid }, { dispatch, getState }) => {
 	const request = { ...data };
 
-	const response = await ApiService.doPut(`/recados/${id}`, request);
+	const response = await ApiService.doPost(`/recado/${uid}`, request);
 	const oldState = getState().recado;
 
-	if (!response) {
+	if (!response.success) {
 		dispatch(updateResponse(response.data));
-		return { ...data, id, loading: false };
+		return { ...data, uid, loading: false };
 	}
 
-	dispatch(getOne(id));
+	dispatch(getOne(uid));
 
-	return { ...oldState, message: response.message, success: response.success };
+	return { ...oldState, message: 'Concluido', success: 'Ok' };
+});
+
+export const deleteOne = createAsyncThunk('recado/deleteOne', async ({ data, uid }, { dispatch, getState }) => {
+	const request = { ...data };
+
+	const response = await ApiService.doDelete(`/recado/${uid}`);
+
+	return { message: 'Concluido', success: 'Ok' };
 });
 
 const initialState = {
 	message: '',
 	loading: false,
-	title: '',
-	description: ''
+	titulo: '',
+	descricao: ''
 };
 
 const recadoSlice = createSlice({
@@ -56,8 +61,8 @@ const recadoSlice = createSlice({
 			prepare: event => ({
 				payload: {
 					id: 'new',
-					title: '',
-					description: '',
+					titulo: '',
+					descricao: '',
 					loading: false,
 					message: ''
 				}

@@ -4,7 +4,6 @@ import ApiService from 'app/services/api';
 export const getAll = createAsyncThunk('recado/getRecado', async () => {
 	const response = await ApiService.doGet('/recado');
 	const data = await response;
-	console.log(data);
 
 	return data;
 });
