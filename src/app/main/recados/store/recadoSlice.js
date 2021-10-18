@@ -4,13 +4,13 @@ import ApiService from 'app/services/api/';
 
 export const getOne = createAsyncThunk('recado/getOne', async (id, { dispatch }) => {
 	const response = await ApiService.doGet(`/recados/${id}`);
-	const { recado } = await response;
+	const { recado } = await response.data;
 
 	return { ...recado };
 });
 
 export const saveOne = createAsyncThunk('recado/saveOne', async (data, { dispatch }) => {
-	const request = { ...data, loginID: 1 };
+	const request = { ...data, id_login: 1 };
 
 	const response = await ApiService.doPost('/recado', request);
 	if (!response.error) {
@@ -22,14 +22,14 @@ export const saveOne = createAsyncThunk('recado/saveOne', async (data, { dispatc
 });
 
 export const updateOne = createAsyncThunk('recado/updateOne', async ({ data, id }, { dispatch, getState }) => {
-	const request = { ...data };
+	const request = { ...data, id_login: 1 };
 
-	const response = await ApiService.doPost(`/recado/${id}`, request);
+	const response = await ApiService.doPut(`/recado/${id}`, request);
 	const oldState = getState().recado;
 
 	if (!response.success) {
 		dispatch(updateResponse(response.data));
-		return { ...data, id, loading: false };
+		return { ...data, id, id_login: 1, loading: false };
 	}
 
 	dispatch(getOne(id));
