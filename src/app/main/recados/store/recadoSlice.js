@@ -3,8 +3,8 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import ApiService from 'app/services/api/';
 
 export const getOne = createAsyncThunk('recado/getOne', async (id, { dispatch }) => {
-	const response = await ApiService.doGet(`/recados/${id}`);
-	const { recado } = await response.data;
+	const response = await ApiService.doGet(`/recado/${id}`);
+	const recado = await response;
 
 	return { ...recado };
 });
@@ -22,14 +22,15 @@ export const saveOne = createAsyncThunk('recado/saveOne', async (data, { dispatc
 });
 
 export const updateOne = createAsyncThunk('recado/updateOne', async ({ data, id }, { dispatch, getState }) => {
-	const request = { ...data, id_login: 1 };
+	const request = { ...data };
+	console.log(request);
 
 	const response = await ApiService.doPut(`/recado/${id}`, request);
 	const oldState = getState().recado;
 
-	if (!response.success) {
+	if (response.error) {
 		dispatch(updateResponse(response.data));
-		return { ...data, id, id_login: 1, loading: false };
+		return { ...data, id, loading: false };
 	}
 
 	dispatch(getOne(id));
